@@ -33,7 +33,6 @@ export abstract class BaseController<T> {
   async saveMany(@Body() entities: T[]): Promise<T[]> {
     return await this.getService().saveMany(entities);
   }
-
   @Post('delete/:id')
   @HttpCode(HttpStatus.OK)
   async delete(@Param('id') id: any) {

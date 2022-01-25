@@ -24,10 +24,10 @@ export class UsersController extends BaseController<User> {
     return this.usersService;
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
 
   // @Get()
   // findAll() {
@@ -39,10 +39,10 @@ export class UsersController extends BaseController<User> {
   //   return this.usersService.findOne(+id);
   // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(+id, updateUserDto);
+  // }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

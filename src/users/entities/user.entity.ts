@@ -1,15 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  Id: number;
-  @Column()
-  LastName: string;
-  @Column()
-  FirstName: string;
-  @Column()
-  Address: string;
-  @Column()
-  Phone: number;
+  id: number;
+  @Column({ length: 100, nullable: true })
+  name: string;
+  @Column({ length: 100, nullable: true })
+  lastname: string;
+  @Column('int', { nullable: true })
+  phone: number;
 }

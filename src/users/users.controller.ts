@@ -2,50 +2,65 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Patch,
-  Param,
   Delete,
+  Body,
+  Param,
+  HttpStatus,
 } from '@nestjs/common';
+
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { BaseController } from 'src/commons/controller.commons';
-import { User } from './entities/user.entity';
-import { BaseService } from 'src/commons/service.commons';
+import { UsersDTO } from './dto/Users.dto';
 
-@Controller('api/users')
-export class UsersController extends BaseController<User> {
-  constructor(private readonly usersService: UsersService) {
-    super();
+@Controller('users')
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+
+  @Get()
+  async showAllUsers() {
+    const users = await this.usersService.showAll();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      users,
+    };
   }
 
-  getService(): BaseService<User> {
-    return this.usersService;
+  @Post()
+  async createUsers(@Body() data: UsersDTO) {
+    const user = await this.usersService.create(data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User created successfully',
+      user,
+    };
   }
 
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
+  @Get(':id')
+  async readUser(@Param('id') id: number) {
+    const data = await this.usersService.read(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User fetched successfully',
+      data,
+    };
+  }
 
-  // @Get()
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+  @Patch(':id')
+  async uppdateUser(@Param('id') id: number, @Body() data: Partial<UsersDTO>) {
+    await this.usersService.update(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User updated successfully',
+    };
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+  @Delete(':id')
+  async deleteUser(@Param('id') id: number) {
+    await this.usersService.destroy(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User deleted successfully',
+    };
+  }
 }

@@ -1,37 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseService } from 'src/commons/service.commons';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+
+import { UserEntity } from './entities/user.entity';
+import { UsersDTO } from './dto/Users.dto';
 
 @Injectable()
-export class UsersService extends BaseService<User> {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {
-    super();
+export class UsersService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
+  ) {}
+
+  async showAll() {
+    return await this.usersRepository.find();
   }
-  getRepository(): Repository<User> {
-    return this.userRepo;
+
+  async create(data: UsersDTO) {
+    const user = this.usersRepository.create(data);
+    await this.usersRepository.save(data);
+    return user;
   }
 
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
+  async findByEmail(email: string): Promise<UsersDTO> {
+    return await this.usersRepository.findOne({
+      where: {
+        email: email,
+      },
+    });
+  }
 
-  // // findAll() {
-  // //   return `This action returns all users`;
-  // // }
+  async read(id: number) {
+    return await this.usersRepository.findOne({ where: { id: id } });
+  }
 
-  // // findOne(id: number) {
-  // //   return `This action returns a #${id} user`;
-  // // }
+  async update(id: number, data: Partial<UsersDTO>) {
+    await this.usersRepository.update({ id }, data);
+    return await this.usersRepository.findOne({ id });
+  }
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+  async destroy(id: number) {
+    await this.usersRepository.delete({ id });
+    return { deleted: true };
+  }
 }

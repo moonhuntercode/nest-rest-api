@@ -1,13 +1,26 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import * as crypto from 'crypto';
 
-@Entity()
-export class User {
+@Entity('user')
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ length: 100, nullable: true })
+  @Column({ length: 100 })
   name: string;
-  @Column({ length: 100, nullable: true })
+  @Column({ length: 100 })
   lastname: string;
-  @Column('int', { nullable: true })
+  @Column('int')
   phone: number;
+  @BeforeInsert()
+  hashPassword() {
+    this.password = crypto.createHmac('sha256', this.password).digest('hex');
+  }
+  @Column()
+  password: string;
 }
